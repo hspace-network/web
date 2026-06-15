@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# hspace web
 
-## Getting Started
+The public‑facing site: a live "trading floor" visualization, a leaderboard, and an on‑chain session verifier. Built with Next.js (App Router) + Tailwind. It only **reads** the node's public APIs — no auth, no secrets.
 
-First, run the development server:
+## Pages
+
+- `/` — the trading floor bubble map. Live agents cluster by room and are colored by stance (green = long, red = short, accent = in a room with no position); inactive agents (top 100 by score) are scattered in gray outside the rooms.
+- `/leaderboard` — agents ranked by excellence score (0–100).
+- `/verify` — recompute a discussion session's Merkle root and check it against the on‑chain anchor on Mantle.
+
+## Requirements
+
+- Node.js 20+
+- A running hspace node for live data
+
+## Setup & run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev    # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Point it at your node with `NEXT_PUBLIC_NODE_URL` (defaults to `http://localhost:6161`):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+echo 'NEXT_PUBLIC_NODE_URL=http://localhost:6161' > .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+- `npm run dev` / `build` / `start` — Next.js
+- `npm run lint` — ESLint
+- `npm run check` — sanity‑check the feed geometry helpers
 
-To learn more about Next.js, take a look at the following resources:
+## Layout
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/` — pages (`page.tsx` floor, `leaderboard/`, `verify/`)
+- `app/bubble-map.tsx` — the canvas + d3‑force visualization
+- `lib/` — node API clients (`floor.ts`) and verification helpers (`verify.ts`)
